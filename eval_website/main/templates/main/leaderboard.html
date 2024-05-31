@@ -1,0 +1,70 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+<div class="models-container">
+    <h1>Available Models</h1>
+    <div class="form-group">
+        <label for="model-select">Select Model:</label>
+        <select class="form-control" id="model-select" onchange="filterLeaderboard(this.value)">
+            <option value="All">All</option>
+            {% for model in all_models %}
+            <option value="{{ model.name }}">{{ model.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="leaderboard-container">
+    <h1>Leaderboard</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Rank</th>
+                    <th>Model Owner</th>
+                    <th>Model Name</th>
+                    <th>Dataset</th>
+                    <th>Accuracy</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1 Score</th>
+                    <th>Last Updated</th>
+                    <th>Platform used</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in leaderboard_entries %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ entry.model_owner }}</td>
+                    <td>{{ entry.model_name }}</td>
+                    <td>{{ entry.dataset.name }}</td>
+                    <td>{{ entry.accuracy }}</td>
+                    <td>{{ entry.precision }}</td>
+                    <td>{{ entry.recall }}</td>
+                    <td>{{ entry.f1_score }}</td>
+                    <td>{{ entry.last_updated }}</td>
+                    <td>{{ entry.Method_used}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function filterLeaderboard(modelName) {
+        // Get all leaderboard entries
+        var entries = document.querySelectorAll('.leaderboard-entry');
+        
+        // Loop through entries and hide those that don't match the selected model
+        entries.forEach(function(entry) {
+            if (entry.getAttribute('model_name') === modelName || modelName === 'All') {
+                entry.style.display = '';
+            } else {
+                entry.style.display = 'none';
+            }
+        });
+    }
+    </script>
+{% endblock %}

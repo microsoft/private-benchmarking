@@ -1,0 +1,46 @@
+annotations_creators:
+  - expert-generated
+language_creators:
+  - expert-generated
+language:
+  - en
+license:
+  - mit
+multilinguality:
+  - monolingual
+size_categories:
+  - n<1K
+source_datasets:
+  - original
+task_categories:
+  - text2text-generation
+task_ids: []
+paperswithcode_id: humaneval
+pretty_name: OpenAI HumanEval
+tags:
+  - code-generation
+dataset_info:
+  config_name: openai_humaneval
+  features:
+    - name: task_id
+      dtype: string
+    - name: prompt
+      dtype: string
+    - name: canonical_solution
+      dtype: string
+    - name: test
+      dtype: string
+    - name: entry_point
+      dtype: string
+  splits:
+    - name: test
+      num_bytes: 194394
+      num_examples: 164
+  download_size: 83920
+  dataset_size: 194394
+configs:
+  - config_name: openai_humaneval
+    data_files:
+      - split: test
+        path: openai_humaneval/test-*
+    default: true

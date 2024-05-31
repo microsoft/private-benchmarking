@@ -1,0 +1,47 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+<style>
+    .container {
+    margin-top: 50px;
+}
+
+.dataset-details h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.dataset-details .description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.dataset-details .uploaded-info {
+    font-size: 14px;
+    color: #666;
+}
+
+.dataset-details .uploaded-info p {
+    margin-bottom: 10px;
+}
+
+.dataset-details .uploaded-info strong {
+    font-weight: bold;
+    color: #333;
+}
+
+</style>
+<div class="container">
+    <div class="dataset-details">
+        <h2>{{ dataset.name }}</h2>
+        <p class="description">{{ dataset.description }}</p>
+        <div class="uploaded-info">
+            <p>Uploaded by: <strong>{{ dataset.user }}</strong></p>
+            <p>Uploaded on: <strong>{{ dataset.uploaded_at }}</strong></p>
+        </div>
+        <p class="card-text">dataset details:</p>
+        <pre>{{ file_contents }}</pre> <!-- Display the file contents here -->
+    </div>
+</div>
+{% endblock %}

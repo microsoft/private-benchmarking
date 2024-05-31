@@ -1,0 +1,148 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+<style>
+    .container {
+    margin-top: 50px;
+}
+
+.model-details h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.model-details h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.evaluation-form {
+    margin-top: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+</style>
+<div class="container">
+    <div class="model-details">
+        <h1>Model Details</h1>
+        <h2>{{ model.name }}</h2>
+        <p>{{ model.description }}</p>
+    </div>
+
+    <form id="evaluationForm" class="evaluation-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="datasetDropdown">Dataset</label>
+            <select name="dataset" id="datasetDropdown" class="form-control" style="height: 50px;">
+                {% for dataset in datasets %}
+                    <option value="{{ dataset.id }}">{{ dataset.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ipAddress">IP Address</label>
+            <input type="text" name="ip_address" id="ipAddress" class="form-control" placeholder="Enter IP Address">
+        </div>
+
+        <div class="form-group">
+            <label for="port">Port</label>
+            <input type="text" name="port" id="port" class="form-control" placeholder="Enter Port">
+        </div>
+
+        <div class="form-group">
+            <label for="architecture_choosen">Evaluation Type</label>
+            <select name="architecture_choosen" id="architecture_choosen" class="form-control" style="height: 50px;">
+                <option value="1">Trusted Model Owner</option>
+                <option value="2">Trusted Dataset Owner</option>
+                <option value="3">Trusted Third Party</option>
+                <option value="4">Trusted Execution Environmnet</option>
+                <option value="5">EzPC(smpc)</option>
+            </select>
+        </div>
+
+        <!-- Hidden input field to store model ID -->
+        <input type="hidden" name="model_id" value="{{ model.id }}">
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("evaluationForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+       // Get form data
+        var formData = new FormData(this);
+        
+        // Convert form data to JSON object
+        var requestData = {};
+        formData.forEach(function(value, key){
+            requestData[key] = value;
+        });
+        //change the dataset to represent the id not the value
+        requestData['dataset'] = document.getElementById("datasetDropdown").value;
+        // var requestData = {
+        //     dataset: document.getElementById("datasetDropdown").value,
+        //     ip_address: document.getElementById("ipAddress").value,
+        //     port: document.getElementById("port").value,
+        //     model_id: document.getElementById("model_id").value
+        // };
+        // Send AJAX request
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "main:send_request" model.id %}', true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Request submitted successfully
+                alert("Evaluation request submitted successfully.");
+                window.location.href = '{% url "main:dashboard" %}';
+            } else {
+                // Handle error
+                console.error(xhr.responseText);
+                alert("Error: " + xhr.responseText);
+            }
+        };
+
+        xhr.onerror = function() {
+            // Handle connection error
+            console.error('Connection error');
+            alert("Connection error");
+        };
+
+        xhr.send(JSON.stringify(requestData));
+    });
+</script>
+
+{% endblock %}
