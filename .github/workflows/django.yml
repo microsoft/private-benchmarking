@@ -2,9 +2,9 @@ name: Django CI
 
 on:
   push:
-    branches: [ "main" ,"dev"]
+    branches: [ "main","dev" ]
   pull_request:
-    branches: [ "main" ,"dev"]
+    branches: [ "main","dev"]
 
 jobs:
   build:
@@ -29,10 +29,11 @@ jobs:
         cd eval_website
         pip install -r requirements.txt
 
-    - name: Run setup.sh script
+    - name: Run first 5 lines of setup.sh script
       run: |
-        chmod +x setup.sh
-        echo "127.0.0.1" | ./setup.sh
+        head -n 5 setup.sh > first_five_lines.sh
+        chmod +x first_five_lines.sh
+        echo "127.0.0.1" | ./first_five_lines.sh
 
     - name: Change to eval_website directory
       run: cd eval_website
