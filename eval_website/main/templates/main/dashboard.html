@@ -1,0 +1,162 @@
+{% extends 'main/header.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .action-buttons {
+    display: flex;
+}
+
+.action-buttons form {
+    margin-right: 10px; /* Adjust spacing between buttons if needed */
+}
+</style>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <a href="{% url 'main:options' %}" class="btn btn-primary">Contribute</a>
+        </div>
+    </div>
+
+    <h2>Available Models</h2>
+    <div class="row">
+        {% for model in models %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ model.name }}</h5>
+                    <p class="card-text">{{ model.description }}</p>
+                    <a href="{% url 'main:model_detail' model.id %}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <h2>Available Datasets</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dataset in datasets %}
+                <tr>
+                    <td>{{ dataset.name }}</td>
+                    <td>{{ dataset.description }}</td>
+                    <td><a href="{% url 'main:dataset_detail' dataset.id %}" class="btn btn-primary">Details</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    {% if evaluation_requests %}
+    <h2>Evaluation Requests</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Model Evaluation Requests</h3>
+            <ul class="evaluation-requests">
+                {% for eval_request in evaluation_requests %}
+                {% if request.user == eval_request.model.user and eval_request.status == "Pending" %}
+                <li>
+                    <strong>{{ eval_request.user.username }}</strong> has requested to evaluate model "{{ eval_request.model.name }}" using dataset "{{ eval_request.dataset.name }}" on architecture "{{eval_request.architecture_choosen}}".
+                    <div class="action-buttons">
+                    <form onsubmit="handleEvaluationRequestResponse(event, '{{ eval_request.id }}', 'approve')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                    </form>
+                    <form onsubmit="handleEvaluationRequestResponse(event, '{{ eval_request.id }}', 'decline')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                    </form>
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>Dataset Evaluation Requests</h3>
+            <ul class="evaluation-requests">
+                {% for eval_request in evaluation_requests %}
+                {% if eval_request.status == "Approved by model owner" and eval_request.dataset.user == request.user %}
+                <li>
+                    
+                    <strong>{{ eval_request.user.username }}</strong> has requested to evaluate model "{{ eval_request.model.name }}" using dataset "{{ eval_request.dataset.name }}" on architecture "{{eval_request.architecture_choosen}}".
+                    <div class="action-buttons">
+                    <form onsubmit="handleEvaluationRequestResponse(event, '{{ eval_request.id }}', 'approve')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                    </form>
+                    <form onsubmit="handleEvaluationRequestResponse(event, '{{ eval_request.id }}', 'decline')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                    </form>
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Submitted Jobs</h3>
+            <ul class="submitted-jobs">
+                {% for eval_request in evaluation_requests %}
+                {% if eval_request.status == 'Approved' and eval_request.model.user == request.user or eval_request.dataset.user == request.user %}
+                <li>
+                    <strong>{{ eval_request.user.username }}</strong> has submitted a job for evaluation of model "{{ eval_request.model.name }}" using dataset "{{ eval_request.dataset.name }}" on architecture "{{eval_request.architecture_choosen}}".
+                    <a href="{% url 'main:download_script' eval_request.id %}" class="btn btn-primary btn-sm">Download Script</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <p>No evaluation requests at the moment.</p>
+    {% endif %}
+
+</div>
+<script>
+    function handleEvaluationRequestResponse(event, requestId, action) {
+        event.preventDefault(); // Prevent default form submission behavior
+        
+       
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "main:evaluate_request_response" 0 %}'.replace('0', requestId), true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Request submitted successfully
+                alert(xhr.responseText);
+                window.location.reload(); // Refresh the page to reflect changes
+            } else {
+                // Handle error
+                console.error(xhr.responseText);
+                alert("Error: " + xhr.responseText);
+            }
+        };
+
+        xhr.onerror = function() {
+            // Handle connection error
+            console.error('Connection error');
+            alert("Connection error");
+        };
+        xhr.send(JSON.stringify({ action: action }));
+    }
+</script>
+{% endblock %}

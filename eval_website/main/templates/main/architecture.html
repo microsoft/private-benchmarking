@@ -1,0 +1,109 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+<style>
+    .card {
+    margin-top: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.card-text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+</style>
+{% if architecture_id == 1 %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Architecture 1</h2>
+            <p class="card-text">If the model is only available as an API (e.g., in
+                the case of proprietary models such as the OpenAI
+                models), then one can only evaluate the benchmarks on these models through queries to the
+                model. Since the model publisher (e.g., OpenAI)
+                will get to see the queries being made to the model
+                (which would be the benchmark dataset in this
+                case), in this scenario, the model publisher would
+                be trusted to not train/contaminate the models on
+                the benchmarks. While in this solution, the model
+                architecture as well as weights are kept private, the
+                benchmark dataset is revealed to the model publisher and one must rely on the publisher ensuring
+                that the model has not been contaminated by the
+                benchmark.</p>
+            
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if architecture_id == 2 %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Architecture 2</h2>
+            <p></p>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if architecture_id == 3 %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Architecture 3</h2>
+            <p></p>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if architecture_id == 4 %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Architecture 4</h2>
+            <p></p>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if architecture_id == 5 %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Architecture 5</h2>
+            <p></p>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

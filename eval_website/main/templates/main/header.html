@@ -1,0 +1,103 @@
+<!-- Copyright (c) Microsoft Corporation.
+ Licensed under the MIT License. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Eval_website</title>
+    <style>
+        /* Add custom styles here */
+        
+        body {
+            padding-top: 70px;
+            background-color: #f0f8ff;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-link {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #fff;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-image: linear-gradient(to right, #4296ea, #2bceff);">
+        <a class="navbar-brand" style="color: #fff;"  href="/">Model Evaluation Portal</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="nav nav-pills ml-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/user_profile/{{user.id}}" id="navUserProfile">Welcome, {{user.username}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard" id="navDashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/leaderboard" id="navLeaderboard">Leaderboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" id="navLogout">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/leaderboard" id="navLeaderboard">Leaderboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login" id="navLogin">Login</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Define the paths for each nav item
+            const navItems = {
+                '/user_profile': 'navUserProfile',
+                '/dashboard': 'navDashboard',
+                '/leaderboard': 'navLeaderboard',
+                '/login': 'navLogin',
+                '/logout': 'navLogout'
+            };
+    
+            // Get the current path
+            const currentPath = window.location.pathname;
+    
+            // Find the nav item that matches the current path and add the 'active' class
+            Object.keys(navItems).forEach((path) => {
+                if (currentPath.startsWith(path)) {
+                    document.getElementById(navItems[path]).classList.add('active');
+                }
+            });
+        });
+    </script>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <span class="text-muted">© 2024 Eval Website. All rights reserved.</span>
+      </div>
+    </footer>
+    <!-- Bootstrap JS and dependencies (not included) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

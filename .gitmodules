@@ -1,0 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+[submodule "gpt-ezpc"]
+	path = gpt-ezpc
+	url = https://github.com/mpc-msri/EzPC.git

@@ -1,0 +1,48 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+<style>
+    .container {
+    margin-top: 50px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.card-text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.card-text a:hover {
+    text-decoration: underline;
+}
+
+</style>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Logout Required</h2>
+                    <p class="card-text">You are already logged in. Please <a href="/logout">logout</a> first to access the login page.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

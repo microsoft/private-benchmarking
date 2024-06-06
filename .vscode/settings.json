@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "*.tcc": "cpp",
+        "unordered_map": "cpp",
+        "fstream": "cpp",
+        "istream": "cpp",
+        "numeric": "cpp",
+        "sstream": "cpp",
+        "*.ipp": "cpp",
+        "ostream": "cpp",
+        "nonlinearoptimization": "cpp",
+        "*.inc": "cpp"
+    },
+    "cmake.configureOnOpen": false
+}

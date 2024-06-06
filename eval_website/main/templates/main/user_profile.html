@@ -1,0 +1,47 @@
+{% extends 'main/header.html' %}
+{% load static %} 
+{% block content %}
+<div class="container">
+    <h1 class="display-4 text-center mb-5">{{ user.username }}'s Profile</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Models</h2>
+            <div class="card-deck">
+                {% for model in models %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ model.name }}</h5>
+                        <p class="card-text">{{ model.description }}</p>
+                        <a href="{% url 'main:model_detail' model.id %}" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>Datasets</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dataset in datasets %}
+                        <tr>
+                            <td>{{ dataset.name }}</td>
+                            <td>{{ dataset.description }}</td>
+                            <td><a href="{% url 'main:dataset_detail' dataset.id %}" class="btn btn-primary">Details</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
