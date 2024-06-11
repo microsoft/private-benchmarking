@@ -22,7 +22,8 @@
 # SOFTWARE.
 
 echo "Enter the huggingface Access Token for Llama2-7B"
-read llama2_7B_token
+read llama2_7B_token_inp
+export llama2_7B_token=$llama2_7B_token_inp
 #testing bert
 echo "Testing bert"
 time python3 bert.py
@@ -34,8 +35,7 @@ cd IndicInstruct
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 git checkout dev
 pip install -r requirements.txt
-./scripts/prepare_eval_data.sh
-time ./scripts/indic_eval/inidcxnli.sh
+time ./scripts/indic_eval/indicxnli.sh
 
 #testing llama2-7B
 echo "Testing llama2-7B"
