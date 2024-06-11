@@ -3,6 +3,8 @@ import sys
 
 DEFAULT_COPYRIGHT_TEXT = """
 Copyright:\n
+Author: Tanmay Rajore \n
+\n
 Copyright (c) 2024 Microsoft Research\n
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

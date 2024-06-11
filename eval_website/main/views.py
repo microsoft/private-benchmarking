@@ -243,7 +243,7 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
         'datasetName': dataset.name,
         'evaluation_request': evaluation_request.id,
         'verification_code': code,
-        # Add any additional parameters here
+        
     }
 
     # Convert data to JSON format
@@ -257,7 +257,7 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
         'ca_cert': open(temp_ca_cert_path, 'rb'),
         'server_cert': open(temp_server_cert_path, 'rb'),
         'server_key': open(temp_server_key_path, 'rb')
-        # Add any other files here
+        
     }
 
     # Configure SSL context with TLSv1.3
@@ -286,7 +286,7 @@ def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, co
         'datasetName': dataset.name,
         'evaluation_request': evaluation_request.id,
         'verification_code': code,
-        # Add any additional parameters here
+        
     }
 
     # Convert data to JSON format
@@ -300,7 +300,7 @@ def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, co
         'ca_cert': open(temp_ca_cert_path, 'rb'),
         'server_cert': open(temp_server_cert_path, 'rb'),
         'server_key': open(temp_server_key_path, 'rb')
-        # Add any other files here
+        
     }
 
     # Configure SSL context with TLSv1.3
