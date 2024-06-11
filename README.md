@@ -1,7 +1,8 @@
 # Private Benchmarking of Machine Learning Models
 
 ## Project Status
-Warning: This is an academic proof-of-concept prototype and has not received careful code review. This implementation is NOT ready for production use.
+**Warning: This is an academic proof-of-concept prototype and has not received careful code review. This implementation is NOT ready for production use.
+
 points
 - [x] Need to change the null and blank default values to false in the models of file uploads (file:models.py)
 - [x] ssl certificate security for the website (file:settings.py)
