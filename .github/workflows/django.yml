@@ -41,4 +41,4 @@ jobs:
     - name: Run Tests
       run: |
         cd eval_website
-        python manage.py test
+        python manage.py test main
