@@ -31,7 +31,7 @@ jobs:
 
     - name: Run first 5 lines of setup.sh script
       run: |
-        head -n 24 setup.sh > first_five_lines.sh
+        head -n 27 setup.sh > first_five_lines.sh
         chmod +x first_five_lines.sh
         echo "127.0.0.1" | ./first_five_lines.sh
 
