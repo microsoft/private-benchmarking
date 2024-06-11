@@ -166,7 +166,17 @@ trained_model = train(model, sst2_train, sst2_val, LR, EPOCHS)
 
 # Evaluate model
 evaluate(trained_model, sst2_val)
+#print the time taken to evaluate the model
+import time
+start = time.time()
 evaluate(trained_model, sst2_test)
+end = time.time()
+print("Time taken to evaluate the model on test data: ", end-start)
+#save it to a file
+f = open("bert_eval_time.txt", "w")
+f.write(str(end-start))
+f.close()
+
 # Save model
 torch.save(trained_model.state_dict(), "model_sst2_finetuned.pth")
 
