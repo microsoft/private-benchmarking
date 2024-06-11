@@ -1,4 +1,4 @@
-# Eval Website
+# Private Benchmarking of Machine Learning Models
 
 ## Project Status
 points
@@ -51,9 +51,9 @@ certain ports are pre-assigned as follows:
 - 9001: for communication of Model owner with the website for receiving key files for EzPC
 
 - ### TTP SERVER
-- Environment Variable ENCYPTION_KEY is required to be set for the TTP server to run (32 bytes/256 bits) 
+- Environment Variable ENCRYPTION_KEY is required to be set for the TTP server to run (32 bytes/256 bits) key.
  ```
- export ENCYPTION_KEY="32 bytes key"
+ export ENCRYPTION_KEY="32 bytes key"
  #generate a 32 bytes key using the following command
  python -c 'import os; print(os.urandom(32))'
  ```

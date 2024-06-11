@@ -1,3 +1,26 @@
+# 
+# Author: Tanmay Rajore
+# 
+# Copyright:
+# 
+# Copyright (c) 2024 Microsoft Research
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 from django.shortcuts import  render, redirect
@@ -243,7 +266,7 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
         'datasetName': dataset.name,
         'evaluation_request': evaluation_request.id,
         'verification_code': code,
-        # Add any additional parameters here
+        
     }
 
     # Convert data to JSON format
@@ -257,7 +280,7 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
         'ca_cert': open(temp_ca_cert_path, 'rb'),
         'server_cert': open(temp_server_cert_path, 'rb'),
         'server_key': open(temp_server_key_path, 'rb')
-        # Add any other files here
+        
     }
 
     # Configure SSL context with TLSv1.3
@@ -286,7 +309,7 @@ def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, co
         'datasetName': dataset.name,
         'evaluation_request': evaluation_request.id,
         'verification_code': code,
-        # Add any additional parameters here
+        
     }
 
     # Convert data to JSON format
@@ -300,7 +323,7 @@ def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, co
         'ca_cert': open(temp_ca_cert_path, 'rb'),
         'server_cert': open(temp_server_cert_path, 'rb'),
         'server_key': open(temp_server_key_path, 'rb')
-        # Add any other files here
+        
     }
 
     # Configure SSL context with TLSv1.3

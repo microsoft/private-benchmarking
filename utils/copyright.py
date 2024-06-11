@@ -2,6 +2,7 @@ import os
 import sys
 
 DEFAULT_COPYRIGHT_TEXT = """
+Author: Tanmay Rajore\n
 Copyright:\n
 Copyright (c) 2024 Microsoft Research\n
 Permission is hereby granted, free of charge, to any person obtaining a copy
