@@ -1,6 +1,6 @@
-# Project Title
+# TTP/TEE Util scripts
 
-This project contains scripts for receiving model and dataset files, evaluating the model, and updating the leaderboard with the evaluation metrics. 
+This folder contains scripts for receiving model and dataset files, evaluating the model, and updating the leaderboard with the evaluation metrics. 
 
 These scripts are intended to be used by the Trusted Third Party (TTP) and Trusted Execution Environment (TEE) party setup.
 
@@ -37,4 +37,4 @@ The script is designed to be run as a standalone program, with the input files s
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the individual Python files for the full license text.
