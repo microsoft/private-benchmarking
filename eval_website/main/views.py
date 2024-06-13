@@ -292,7 +292,7 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
     context.minimum_version = ssl.TLSVersion.TLSv1_2
 
     # Send a POST request to the third party server
-    response = requests.post(url, data=json_data, files=files, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
+    response = requests.post(url, json=json_data, files=files, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
 
     # Check response
     if response.status_code == 200:
@@ -302,13 +302,22 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
 def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, code,temp_ca_cert_path, temp_server_cert_path, temp_server_key_path):
     # Generate script content with runtime input parameters
     # Send metadata to third party
+    print("Sending metadata to confidential compute server")
+    modelID=model.id
+    modelName=model.name
+    datasetID=dataset.id
+    datasetName=dataset.name
+    evaluation_requestID=evaluation_request.id
+    verification_code=code
+    print(modelID,modelName,datasetID,datasetName,evaluation_requestID,verification_code)
+
     data = {
-        'modelID': model.id,
-        'modelName': model.name,
-        'datasetID': dataset.id,
-        'datasetName': dataset.name,
-        'evaluation_request': evaluation_request.id,
-        'verification_code': code,
+        'modelID': modelID,
+        'modelName': modelName,
+        'datasetID': datasetID,
+        'datasetName': datasetName,
+        'evaluation_request': evaluation_requestID,
+        'verification_code': verification_code,
         
     }
 
@@ -335,13 +344,14 @@ def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, co
     context.minimum_version = ssl.TLSVersion.TLSv1_2
 
     # Send a POST request to the third party server
-    response = requests.post(url, data=json_data, files=files, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
+    response = requests.post(url, json=json_data, files=files, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
 
     # Check response
     if response.status_code == 200:
         print("Metadata sent successfully.")
     else:
         print("Failed to send metadata:", response.text)
+
 @login_required
 def download_script(request, request_id):
 
@@ -1447,7 +1457,7 @@ echo "Results will be available on the leaderboard"
 echo "Total time taken: $(echo "$end_time_full - $start_time_full" | bc) seconds"
 echo "Time taken for model transfer: $(echo "$file_send_end_time - $file_send_start_time" | bc) seconds"
             '''
-             code=confidential_compute.auth_token
+             code=cc.auth_token
              send_metadata_to_cc(model, dataset, evaluation_request, cc.ip_address, cc.port, code,temp_ca_cert_path, temp_server_cert_path, temp_server_key_path)
         script_file_path = os.path.join(tempfile.mkdtemp(), 'script.sh')
         with open(script_file_path, 'w') as script_file:
