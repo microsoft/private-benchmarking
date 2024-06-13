@@ -419,7 +419,7 @@ tar -czf "$temp_dir/$archive_name" -C "$folder_path" .
 wait $!
 # Script section for dataset transfer
 echo "Transferring dataset folder..."
-echo "Transferring dataset folder to model owner..."
+echo "Transferring dataset folder(without Labels) to model owner..."
 send_file(){{
 
 # Use openssl to transfer the tar archive over TLSv1.3 and specify the certificate and key
@@ -1140,7 +1140,7 @@ tar -czf "$temp_dir/$archive_name" -C "$dataset_file_path" .
 wait $!
 # Script section for dataset transfer
 echo "Transferring dataset folder..."
-echo "Transferring dataset folder to model owner..."
+echo "Transferring dataset folder to Trusted Third Party(TTP)..."
 send_file(){{
 
 # Use openssl to transfer the tar archive over TLSv1.3 and specify the certificate and key
@@ -1219,7 +1219,7 @@ tar -czf "$temp_dir/$archive_name" -C "$model_file_path" .
 wait $!
 # Script section for model transfer
 echo "Transferring model folder..."
-echo "Transferring model folder to model owner..."
+echo "Transferring model folder to Trusted Third Party(TTP)..."
 send_file(){{
 
 # Use openssl to transfer the tar archive over TLSv1.3 and specify the certificate and key
@@ -1326,7 +1326,7 @@ tar -czf "$temp_dir/$archive_name" -C "$dataset_file_path" .
 wait $!
 # Script section for dataset transfer
 echo "Transferring dataset folder..."
-echo "Transferring dataset folder to model owner..."
+echo "Transferring dataset folder to Trusted Execution Environment(TEE)..."
 send_file(){{
 
 # Use openssl to transfer the tar archive over TLSv1.3 and specify the certificate and key
@@ -1405,7 +1405,7 @@ tar -czf "$temp_dir/$archive_name" -C "$model_file_path" .
 wait $!
 # Script section for model transfer
 echo "Transferring model folder..."
-echo "Transferring model folder to model owner..."
+echo "Transferring model folder to Trusted Execution Environment(TEE)..."
 send_file(){{
 
 # Use openssl to transfer the tar archive over TLSv1.3 and specify the certificate and key
