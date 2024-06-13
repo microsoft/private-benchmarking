@@ -55,7 +55,7 @@ class ModelArchitecture(models.Model):
         model_id = uuid.uuid4()
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         return f'model_architectures/modelconfig_{username}_{model_id}_{timestamp}.json'
-    architecture_file = models.FileField(upload_to=architecture_file_upload_path, validators=[FileExtensionValidator(allowed_extensions=['json']),validate_file_size], blank=True, null=True)
+    architecture_file = models.FileField(upload_to=architecture_file_upload_path, validators=[FileExtensionValidator(allowed_extensions=['json']),validate_file_size], blank=False, null=False)
 
     def docker_file_upload_path(instance, filename):
         username = instance.user.username
@@ -63,7 +63,7 @@ class ModelArchitecture(models.Model):
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         return f'docker_files/docker_{username}_{model_id}_{timestamp}.Dockerfile'
 
-    docker_file = models.FileField(upload_to=docker_file_upload_path, validators=[FileExtensionValidator(allowed_extensions=['Dockerfile','DOCKERFILE']),validate_file_size], blank=True, null=True)
+    docker_file = models.FileField(upload_to=docker_file_upload_path, validators=[FileExtensionValidator(allowed_extensions=['Dockerfile','DOCKERFILE']),validate_file_size], blank=False, null=False)
 
     def __str__(self):
         return self.name
@@ -78,7 +78,7 @@ class Dataset(models.Model):
         dataset_id = uuid.uuid4()
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         return f'datasets_metadata/dataset_{username}_{dataset_id}_{timestamp}.txt'
-    dataset_metadata = models.FileField(upload_to=dataset_metadata_upload_path, validators=[FileExtensionValidator(allowed_extensions=['txt']),validate_file_size],blank=True, null=True)
+    dataset_metadata = models.FileField(upload_to=dataset_metadata_upload_path, validators=[FileExtensionValidator(allowed_extensions=['txt']),validate_file_size],blank=False, null=False)
 
     def __str__(self):
         return self.name
