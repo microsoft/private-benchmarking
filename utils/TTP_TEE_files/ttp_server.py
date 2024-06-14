@@ -31,59 +31,26 @@ import secrets
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import json
 import shlex
+from cryptography.hazmat.backends import default_backend
+
 
 # Define the directory where files will be stored
 UPLOAD_DIR = 'uploads'
 
 class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
-        # Get the length of the content
+        
+        #receive the metadata
         content_length = int(self.headers['Content-Length'])
-
-        # Read the raw HTTP POST data from the socket till all is received
         post_data = self.rfile.read(content_length)
-        # Convert the raw data to a string
-        post_data = post_data.decode('utf-8')
-        # Find the boundary string
-        parsed_data = json.loads(post_data)
-
-        # Print the parsed data
-        print(parsed_data)
-        modelID = parsed_data['modelID']
-        modelName = parsed_data['modelName']
-        datasetID = parsed_data['datasetID']
-        datasetName = parsed_data['datasetName']
-        verification_code = parsed_data['verification_code']
-
-        # Create the upload directory if it doesn't exist
-        os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-        # Save the uploaded files
-        ca_cert_file = parsed_data['ca_cert']
-        server_cert_file = parsed_data['server_cert']
-        server_key_file = parsed_data['server_key']
-
-        ca_cert_path = os.path.join(UPLOAD_DIR, 'ca_cert.pem.enc')
-        server_cert_path = os.path.join(UPLOAD_DIR, 'server_cert.pem.enc')
-        server_key_path = os.path.join(UPLOAD_DIR, 'server_key.pem.enc')
-
-        # Encrypt and save the uploaded files
-        key = os.environ.get('ENCRYPTION_KEY').encode()  # Encryption key
-        nonce = secrets.token_bytes(12)
-        # Encrypt and save the uploaded files
-        cipher = Cipher(algorithms.AES(key), modes.CBC(nonce))
-        encryptor = cipher.encryptor() 
-        with open(ca_cert_path, 'wb') as f:
-            encrypted_data = encryptor.update(ca_cert_file.encode()) + encryptor.finalize()
-            f.write(encrypted_data)
-
-        with open(server_cert_path, 'wb') as f:
-            encrypted_data = encryptor.update(server_cert_file.encode()) + encryptor.finalize()
-            f.write(encrypted_data)
-
-        with open(server_key_path, 'wb') as f:
-            encrypted_data = encryptor.update(server_key_file.encode()) + encryptor.finalize()
-            f.write(encrypted_data)
+        metadata = json.loads(post_data.decode('utf-8'))
+        print(f'Metadata received: {metadata}')
+        # Extract metadata
+        modelID = metadata['modelID']
+        modelName = metadata['modelName']
+        datasetID = metadata['datasetID']
+        datasetName = metadata['datasetName']
+        verification_code = metadata['verification_code']
 
         # Respond with success message
         self.send_response(200)
@@ -92,35 +59,71 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(b'Metadata and files received successfully')
 
         # Call the function to run the Bash script
-        evaluation_file_path = "./indicxnli.sh"
+        #ask the user for input of the evaluation file path
+        evaluation_file_path = input("Enter the evaluation file path: ")
+
         #print(modelID,modelName,datasetID,datasetName,evaluation_file_path, verification_code, ca_cert_path, server_cert_path, server_key_path)
         #check if modelID is integer only
-        if re.match("^[0-9]*$", modelID):
-            modelID = int(modelID)
-        if re.match("^[0-9]*$", datasetID):
-            datasetID = int(datasetID)
-        #check if model name is string only
-        if re.match("^[a-zA-Z]*$", modelName):
-            modelName = str(modelName)
-        if re.match("^[a-zA-Z]*$", datasetName):
-            datasetName = str(datasetName)
-        #check verification code is hex only
-        if re.match("^[0-9a-fA-F]*$", verification_code):
-            verification_code = str(verification_code)
+        if type(modelID) != int:
+            print("Invalid model ID")
+            return
+        #check if datasetID is integer only
+        if type(datasetID) != int:
+            print("Invalid dataset ID")
+            return
+        #check if verification code is str only
+        if type(verification_code) != str:
+            print("Invalid verification code")
+            return
+        #check if evaluation file path is valid
+        if not os.path.exists(evaluation_file_path):
+            print("Invalid evaluation file path")
+            return
+        #check if server certificate file path is valid
+        server_cert_path = "server.crt"
+        if not os.path.exists(server_cert_path):
+            print("Invalid server certificate file path")
+            return
+        #check if server private key file path is valid
+        server_key_path = "server.key"
+        if not os.path.exists(server_key_path):
+            print("Invalid server private key file path")
+            return
+        #check if CA certificate file path is valid
+        ca_cert_path = "ca.crt"
+        if not os.path.exists(ca_cert_path):
+            print("Invalid CA certificate file path")
+            return
+        #call the function to run the bash script
 
         run_bash_script(modelID, modelName, datasetID, datasetName, evaluation_file_path, verification_code, ca_cert_path, server_cert_path, server_key_path)
 
 def run_bash_script(modelID,modelName,datasetID,datasetName,evaluation_file_path, verification_code, ca_cert_path, server_cert_path, server_key_path):
     # Command to execute the Bash script
     bash_command = f"./ttp_bash.sh {modelID} {modelName} {datasetID} {datasetName} {evaluation_file_path} {verification_code} {ca_cert_path} {server_cert_path} {server_key_path}"
-    key = os.environ.get('ENCRYPTION_KEY').encode()  # Encryption key
-    nonce = secrets.token_bytes(12)
+    BLOCK_SIZE = 16  # AES block size in bytes
+
+# Function to pad the data to be encrypted
+    def pad_data(data):
+        padding_length = BLOCK_SIZE - (len(data) % BLOCK_SIZE)
+        padding = bytes([padding_length]) * padding_length
+        return data + padding
+
+    # Function to remove padding after decryption
+    def unpad_data(data):
+        padding_length = data[-1]
+        return data[:-padding_length]
+        
+    key = os.environ.get('ENCRYPTION_KEY')# Encryption key
+    key = bytes.fromhex(key)
+    nonce = secrets.token_bytes(16)
         # Encrypt and save the uploaded files
-    cipher = Cipher(algorithms.AES(key), modes.CBC(nonce))
+    cipher = Cipher(algorithms.AES(key), modes.CBC(nonce), backend=default_backend())
     encryptor = cipher.encryptor() 
     #write the command to a file
-    with open('ttp_bash.sh.enc', 'w') as f:
-        encrypted_data = encryptor.update(bash_command.encode()) + encryptor.finalize()
+    with open('ttp_bash.sh.enc', 'wb') as f:
+        padded=pad_data(bash_command.encode())
+        encrypted_data = encryptor.update(padded) + encryptor.finalize()
         f.write(encrypted_data)
 
     # Decrypt the command
@@ -128,7 +131,7 @@ def run_bash_script(modelID,modelName,datasetID,datasetName,evaluation_file_path
         encrypted_data = f.read()
         decryptor = cipher.decryptor()
         decrypted_data = decryptor.update(encrypted_data) + decryptor.finalize()
-        bash_command = decrypted_data.decode()
+        bash_command = unpad_data(decrypted_data).decode()
     file_ex= bash_command
     # Execute the Bash script
     def execute(cmd):
@@ -160,12 +163,25 @@ def run(server_class=HTTPServer, handler_class=RequestHandler, port=8001):
     ca_cert_file = 'ca.crt'
     server_cert_file = 'server.crt'
     server_key_file = 'server.key'
+    #ask the user for input of the server certificate and private key file path and give option to use default
+    server_cert_file = input("Enter the server certificate file path: ")
+    server_key_file = input("Enter the server private key file path: ")
+    ca_cert_file = input("Enter the CA certificate file path: ")
+    if server_cert_file == "":
+        server_cert_file = 'server.crt'
+    if server_key_file == "":
+        server_key_file = 'server.key'
+    if ca_cert_file == "":
+        ca_cert_file = 'ca.crt'
+
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(certfile=server_cert_file, keyfile=server_key_file)
     context.load_verify_locations(cafile=ca_cert_file)
     context.verify_mode = ssl.CERT_NONE
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
     context.minimum_version = ssl.TLSVersion.TLSv1_2
+    #remove host name check
+    context.check_hostname = False
 
     httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     
