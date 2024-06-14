@@ -56,7 +56,7 @@ certain ports are pre-assigned as follows:
  ```
  export ENCRYPTION_KEY="32 bytes key"
  #generate a 32 bytes key using the following command
- python -c 'import os; print(os.urandom(32))'
+ python -c 'import os, binascii; print(binascii.hexlify(os.urandom(32)).decode("utf-8"))'
  ```
 
 
