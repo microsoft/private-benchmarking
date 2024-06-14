@@ -269,7 +269,7 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
         
     }
 
-    # Convert data to JSON format
+    #convert data to json format
     json_data = json.dumps(data)
 
     # Construct the URL for the third party server
@@ -290,38 +290,30 @@ def send_metadata_to_third_party(model, dataset, evaluation_request, ip_address,
     context.check_hostname = False
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
     context.minimum_version = ssl.TLSVersion.TLSv1_2
+    context.check_hostname = False
 
     # Send a POST request to the third party server
-    response = requests.post(url, json=json_data, files=files, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
-
+    response = requests.post(url,data=json_data, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
     # Check response
     if response.status_code == 200:
         print("Metadata sent successfully.")
     else:
         print("Failed to send metadata:", response.text)
+
 def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, code,temp_ca_cert_path, temp_server_cert_path, temp_server_key_path):
     # Generate script content with runtime input parameters
     # Send metadata to third party
-    print("Sending metadata to confidential compute server")
-    modelID=model.id
-    modelName=model.name
-    datasetID=dataset.id
-    datasetName=dataset.name
-    evaluation_requestID=evaluation_request.id
-    verification_code=code
-    print(modelID,modelName,datasetID,datasetName,evaluation_requestID,verification_code)
-
     data = {
-        'modelID': modelID,
-        'modelName': modelName,
-        'datasetID': datasetID,
-        'datasetName': datasetName,
-        'evaluation_request': evaluation_requestID,
-        'verification_code': verification_code,
+        'modelID': model.id,
+        'modelName': model.name,
+        'datasetID': dataset.id,
+        'datasetName': dataset.name,
+        'evaluation_request': evaluation_request.id,
+        'verification_code': code,
         
     }
 
-    # Convert data to JSON format
+    #convert data to json format
     json_data = json.dumps(data)
 
     # Construct the URL for the third party server
@@ -342,10 +334,10 @@ def send_metadata_to_cc(model, dataset, evaluation_request, ip_address, port, co
     context.check_hostname = False
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
     context.minimum_version = ssl.TLSVersion.TLSv1_2
+    context.check_hostname = False
 
     # Send a POST request to the third party server
-    response = requests.post(url, json=json_data, files=files, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
-
+    response = requests.post(url,data=json_data, verify="ca.crt", timeout=10, stream=True)  # Set verify=False to disable SSL certificate verification
     # Check response
     if response.status_code == 200:
         print("Metadata sent successfully.")
@@ -1111,7 +1103,7 @@ echo "Time taken for model transfer: $(echo "$file_send_end_time - $file_send_st
 
         return response
     elif(evaluation_request.is_approved_by_model_owner and evaluation_request.is_approved_by_dataset_owner and architecture_choosen==3):
-        third_party = TrustedThirdParty.objects.filter(id=1)
+        third_party = TrustedThirdParty.objects.get(id=1)
         # Generate script content with runtime input parameters
         script_content = '''#!/bin/bash'''
         if request.user == evaluation_request.dataset.user:

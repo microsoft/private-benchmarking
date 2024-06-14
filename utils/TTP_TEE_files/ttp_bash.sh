@@ -29,18 +29,6 @@ website_ip='10.168.241.37'
 PORT_MODEL=7001
 PORT_DATASET=7002
 evaluation_file_path=$5
-# Function to receive files
-
-decrypt_the_certificates() {
-    # Decrypt the server certificate
-    openssl enc -d -aes-256-cbc -in server_cert.pem.enc -out server_cert.pem -k $ENCRYPTION_KEY
-
-    # Decrypt the server private key
-    openssl enc -d -aes-256-cbc -in server_key.pem.enc -out server_key.pem -k $ENCRYPTION_KEY
-
-    # Decrypt the CA certificate
-    openssl enc -d -aes-256-cbc -in ca_cert.pem.enc -out ca_cert.pem -k $ENCRYPTION_KEY
-}
 
 receive_file() {
     # Arguments: $1 = port, $2 = file save location
@@ -86,7 +74,6 @@ def receive_file(port, file_path, server_cert, server_key):
 receive_file($1, "$2", "server.crt", "server.key")
 END
 }
-decrypt_the_certificates
 # Start receiving model files on PORT_MODEL
 receive_file $PORT_MODEL "model.tar.gz" &
 
