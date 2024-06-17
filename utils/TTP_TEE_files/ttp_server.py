@@ -61,7 +61,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         # Call the function to run the Bash script
         #ask the user for input of the evaluation file path
-        evaluation_file_path = input("Enter the evaluation file path: ")
+        evaluation_file_path = "../eval.py"
 
         #print(modelID,modelName,datasetID,datasetName,evaluation_file_path, verification_code, ca_cert_path, server_cert_path, server_key_path)
         #check if modelID is integer only
@@ -151,7 +151,7 @@ def run_bash_script(modelID,modelName,datasetID,datasetName,evaluation_file_path
     for path in execute(file_ex):
         print(path.strip(), end="")
 
-
+    print("Evaluation Completed Successfully , Leaderboard Updated")
     # Print the output and error messages
     # print("Bash script output:", stdout.decode('utf-8'))
     # print("Bash script errors:", stderr.decode('utf-8'))

@@ -22,10 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import torch
+import transformers
 from transformers import BertTokenizer, BertForSequenceClassification
 from datasets import load_dataset
 
 # Load SST-2 dataset
+transformers.logging.set_verbosity_error()
 dataset = load_dataset("glue", "sst2")
 
 # Load pre-trained BERT model and tokenizer
