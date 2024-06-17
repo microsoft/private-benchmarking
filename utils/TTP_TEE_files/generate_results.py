@@ -49,7 +49,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ground_truth_labels_file", type=str, help="Path to the file containing ground truth labels.",default="output.txt")
+    parser.add_argument("--ground_truth_labels_file", type=str, help="Path to the file containing ground truth labels.",default="./output.txt")
     parser.add_argument("--predicted_labels_file", type=str, help="Path to the file containing predicted labels.",default="./predicted_labels.txt")
     args = parser.parse_args()
     main(args)

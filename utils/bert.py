@@ -57,7 +57,7 @@ def collate_fn(batch):
 
 # Generate predictions
 predicted_labels = []
-data_loader = torch.utils.data.DataLoader(test_dataset, batch_size=8, collate_fn=collate_fn)
+data_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1, collate_fn=collate_fn)
 with torch.no_grad():
     for batch in data_loader:
         input_ids = batch["input_ids"].to(device)
@@ -65,8 +65,9 @@ with torch.no_grad():
         outputs = model(input_ids, attention_mask=attention_mask)
         predictions = torch.argmax(outputs.logits, dim=1)
         predicted_labels.extend(predictions.cpu().numpy())
+        break
 
 # Write predictions to file
-with open("results/predicted_labels.txt", "w") as f:
+with open("./predicted_labels.txt", "w") as f:
     for label in predicted_labels:
         f.write(str(label) + "\n")
