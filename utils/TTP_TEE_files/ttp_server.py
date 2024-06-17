@@ -32,7 +32,8 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import json
 import shlex
 from cryptography.hazmat.backends import default_backend
-
+import warnings
+warnings.filterwarnings("ignore")
 
 # Define the directory where files will be stored
 UPLOAD_DIR = 'uploads'

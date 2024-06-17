@@ -25,7 +25,8 @@ import torch
 import transformers
 from transformers import BertTokenizer, BertForSequenceClassification
 from datasets import load_dataset
-
+import warnings
+warnings.filterwarnings("ignore")
 # Load SST-2 dataset
 transformers.logging.set_verbosity_error()
 dataset = load_dataset("glue", "sst2")

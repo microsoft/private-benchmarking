@@ -26,6 +26,8 @@
 import argparse
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+import warnings
+warnings.filterwarnings("ignore")
 def main(args):
     # Load ground truth labels
     with open(args.ground_truth_labels_file, "r") as f:
