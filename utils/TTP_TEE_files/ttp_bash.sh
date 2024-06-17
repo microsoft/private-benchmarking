@@ -25,7 +25,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 # Define the ports for listening
-website_ip='10.168.241.37'
+website_ip='127.0.0.1'
 PORT_MODEL=7001
 PORT_DATASET=7002
 evaluation_file_path=$5
