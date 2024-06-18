@@ -15,6 +15,11 @@ points
 
 This project aims to create a platform that enables users to perform private benchmarking of machine learning models. The platform facilitates the evaluation of models based on different trust levels between the model owners and the dataset owners.
 
+This repository provides the accompnaying code for paper https://arxiv.org/abs/2403.00393
+
+Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs
+Nishanth Chandran, Sunayana Sitaram, Divya Gupta, Rahul Sharma, Kashish Mittal, Manohar Swaminathan
+
 ## Installation
 for complete build and EzPC LLM support
 ```
