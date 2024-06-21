@@ -36,6 +36,7 @@ from cryptography.hazmat.backends import default_backend
 
 # Define the directory where files will be stored
 UPLOAD_DIR = 'uploads'
+working_directory = os.getcwd()
 
 class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -80,17 +81,17 @@ class RequestHandler(BaseHTTPRequestHandler):
             print("Invalid evaluation file path")
             return
         #check if server certificate file path is valid
-        server_cert_path = "server.crt"
+        server_cert_path = os.getcwd()+"/server.crt"
         if not os.path.exists(server_cert_path):
             print("Invalid server certificate file path")
             return
         #check if server private key file path is valid
-        server_key_path = "server.key"
+        server_key_path = os.getcwd()+"/server.key"
         if not os.path.exists(server_key_path):
             print("Invalid server private key file path")
             return
         #check if CA certificate file path is valid
-        ca_cert_path = "ca.crt"
+        ca_cert_path = os.getcwd()+"/ca.crt"
         if not os.path.exists(ca_cert_path):
             print("Invalid CA certificate file path")
             return
@@ -100,7 +101,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 def run_bash_script(modelID,modelName,datasetID,datasetName,evaluation_file_path, verification_code, ca_cert_path, server_cert_path, server_key_path):
     # Command to execute the Bash script
-    bash_command = f"./ttp_bash.sh {modelID} {modelName} {datasetID} {datasetName} {evaluation_file_path} {verification_code} {ca_cert_path} {server_cert_path} {server_key_path}"
+    bash_command = f"{working_directory}/ttp_bash.sh {modelID} {modelName} {datasetID} {datasetName} {evaluation_file_path} {verification_code} {ca_cert_path} {server_cert_path} {server_key_path}"
     BLOCK_SIZE = 16  # AES block size in bytes
 
 # Function to pad the data to be encrypted
@@ -136,7 +137,7 @@ def run_bash_script(modelID,modelName,datasetID,datasetName,evaluation_file_path
     # Execute the Bash script
     def execute(cmd):
         sanitized_cmd = shlex.quote(cmd)
-        popen = subprocess.Popen(sanitized_cmd,shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+        popen = subprocess.Popen(sanitized_cmd,shell=True, stdout=subprocess.PIPE, universal_newlines=True,cwd=working_directory)
         for stdout_line in iter(popen.stdout.readline, ""):
             yield stdout_line 
         popen.stdout.close()

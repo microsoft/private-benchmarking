@@ -10,6 +10,8 @@ These scripts are intended to be used by the Trusted Third Party (TTP) and Trust
 
 2. `generate_results.py`: This is a Python script that calculates and prints the accuracy, precision, recall, and F1 score of the model predictions.
 
+3. `ttp_server.py`: This is a Python script that communicates with the platform to receive metadata about the evaluation task, and then calls the `ttp_bash.sh` script to perform the evaluation.
+
 ## Usage
 
 ### ttp_bash.sh

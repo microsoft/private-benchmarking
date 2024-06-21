@@ -37,3 +37,9 @@ sudo apt install libeigen3-dev cmake build-essential git sqlite3
 pip install -r OnnxBridge/requirements.txt
 chmod +x ./setup_env_and_build.sh
 sudo ./setup_env_and_build.sh quick
+cd GPU-MPC
+chmod +x setup.sh
+export CUDA_VERSION=11.8 #change this according to your system config
+export CUDA_ARCH=90 #change this according to your system config
+./setup.sh
+make sigma_offline_online
