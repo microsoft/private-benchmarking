@@ -1859,7 +1859,7 @@ END
             id=0 
             for file in key_files_model/*.dat
             do
-                $Ezpc_path {model_detail.name} 1 0 $key_path {evaluation_request.ip_address} 8 > output_model/$id.log
+                $Ezpc_path {model_detail.name} 1 0 $key_path 0.0.0.0 8 > output_model/$id.log
                 id=$((id+1))
             done
             eval_end_time=$(date +%s.%N)
