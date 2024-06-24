@@ -55,6 +55,8 @@ def send_file(folder_path, server_address, server_port, ca, type,model_name,data
         context.load_verify_locations(cafile=ca)
         context.verify_mode = ssl.CERT_REQUIRED
         context.check_hostname = False
+        context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
 
         with context.wrap_socket(
             s, server_side=False, server_hostname=server_address
