@@ -1631,12 +1631,13 @@ END
             id=0
             
             touch predicted_output.txt
-            for file in inputs/*.dat;
+            for file in inputs/*;
             do
                complete_path=$(realpath $file)
                echo $complete_path
                $Ezpc_path {model_detail.name} 1 1 $key_path {evaluation_request.ip_address} 8 > output_dataset/$id.log
                wait $!
+               break
                id=$((id+1))
             done
             evaluation_end_time=$(date +%s.%N)
@@ -1857,10 +1858,11 @@ END
             #iterate over the received key files
             eval_start_time=$(date +%s.%N)
             id=0 
-            for file in key_files_model/*.dat
+            for file in key_files_model/*/;
             do
-                $Ezpc_path {model_detail.name} 1 0 $key_path {evaluation_request.ip_address} 8 > output_model/$id.log
+                $Ezpc_path {model_detail.name} 1 0 $key_path 0.0.0.0 8 > output_model/$id.log
                 id=$((id+1))
+                break
             done
             eval_end_time=$(date +%s.%N)
             end_time_full=$(date +%s.%N)
@@ -1869,8 +1871,7 @@ END
             echo "Total time taken: $(echo "$end_time_full - $start_time_full" | bc) seconds"
             echo "Time taken for key transfer: $(echo "$key_received_end_time - $key_received_start_time" | bc) seconds"
             echo "Time taken for model evaluation: $(echo "$eval_end_time - $eval_start_time" | bc) seconds"
-            
-            '''
+                    '''
         script_file_path = os.path.join(tempfile.mkdtemp(), 'script.sh')
         with open(script_file_path, 'w') as script_file:
             script_file.write(script_content)
@@ -1981,14 +1982,14 @@ def platform_ezpc_processing(metadata_file_path,evaluation_request,dataset_ip_re
             filename=line.split()
             #run the evaluation script on the file
             print(filename)
-            os.system(f"./sigma_offline_online {model_detail.name} {filename[0]} 0 0 ./ezpc_keys/{model_detail.name}_{dataset_id}_{id}/offline/")
-            os.system(f"./sigma_offline_online {model_detail.name} {filename[0]} 0 1 ./ezpc_keys/{model_detail.name}_{dataset_id}_{id}/offline/")
+            os.system(f"./sigma_offline_online {model_detail.name} {filename[0]} 0 0 ./ezpc_keys/{model_detail.name}_{dataset_id}_{id}/offline_server/")
+            os.system(f"./sigma_offline_online {model_detail.name} {filename[0]} 0 1 ./ezpc_keys/{model_detail.name}_{dataset_id}_{id}/offline_client/")
             #wait for the command to complete
             id=id+1
 
         #send the generated keys to the client and server simultaneously
-     subprocess.run(['python3', 'send_keys.py', 'dataset', str(id), str(dataset_ip_received), str(dataset_port_received)],check=True,cwd=path)
-     subprocess.run(['python3', 'send_keys.py', 'model', str(id), str(model_ip_received), str(model_port_received)],check=True,cwd=path)
+     subprocess.run(['python3', 'send_keys.py', 'dataset', str(id), str(dataset_ip_received), str(dataset_port_received),str(model_detail.name),str(dataset_id)],check=True,cwd=path)
+     subprocess.run(['python3', 'send_keys.py', 'model', str(id), str(model_ip_received), str(model_port_received),str(model_detail.name),str(dataset_id)],check=True,cwd=path)
 
 
 @require_POST
