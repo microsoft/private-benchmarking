@@ -1475,6 +1475,8 @@ echo "Time taken for model transfer: $(echo "$file_send_end_time - $file_send_st
         return response
     elif(evaluation_request.is_approved_by_model_owner and evaluation_request.is_approved_by_dataset_owner and architecture_choosen==5):
          # Generate script content with runtime input parameters
+        model_detail=ModelArchitecture.objects.get(id=evaluation_request.model.id)
+        dataset_detail=Dataset.objects.get(id=evaluation_request.dataset.id)
         script_content = '''#!/bin/bash'''
         
         if request.user == evaluation_request.dataset.user:
@@ -1517,7 +1519,7 @@ def send_metadata(metadata_file, verification_code):
     # Data to send
     data = {{
         'verification_code': verification_code,
-        'request_id': '42'
+        'request_id': {evaluation_request.id},
     }}
     # Send metadata
     response = requests.post(url, files=files, data=data)
@@ -1619,9 +1621,9 @@ END
             receive_key_files_end_time=$(date +%s.%N)
             # Starting evaluation using EzPC
             evaluation_start_time=$(date +%s.%N)
-            Ezpc_path="./executables/bertezpc"
+            Ezpc_path="./EzPC/GPU-MPC/experiments/sigma/sigma_offline_online"
             if [ ! -f "$Ezpc_path" ]; then
-                echo "EzPC executable not found. Please build the EzPC project first."
+                echo "EzPC executable not found. Please build the EzPC(GPU-MPC sigma) project first."
                 exit 1
             fi
             echo "Starting evaluation using EzPC..."
@@ -1633,35 +1635,17 @@ END
             do
                complete_path=$(realpath $file)
                echo $complete_path
-               $Ezpc_path 3 ip={evaluation_request.ip_address} in_file=$complete_path key_path=$key_path id=$id nt=8 > output_dataset/$id.log
+               $Ezpc_path {model_detail.name} 1 1 $key_path {evaluation_request.ip_address} 8 > output_dataset/$id.log
                wait $!
-               #currently set for bert model and sst2 dataset !!!!!!!!!!!!!!! change here !!!!!!!!!!!!!!!!!!!!
-               #get the last two lines of output to check if the evaluation was successful
-               res0= tail -n 1 output_dataset/$id.log
-               #get the second last line of output
-               res1= tail -n 2 output_dataset/$id.log | head -n 1
-               #compare the last two lines 
-               if [ $res0 > $res1 ]; then
-                   echo "0" >>predicted_output.txt
-               else
-                   echo "1" >>predicted_output.txt
-               fi
-
-
-               if(( $?)); then
-                   echo "Error in running the evaluation script."
-                   exit 1
-               fi
                id=$((id+1))
             done
             evaluation_end_time=$(date +%s.%N)
             #upload results to the platform
             echo "Uploading results to the platform..."
             # generate the results 
-            python3 ./generate_results.py --ground_truth_labels_file ./dataset/sst2/labels.txt --predicted_labels_file ./predicted_output.txt > results.txt
+            # python3 ./generate_results.py --ground_truth_labels_file ./dataset/sst2/labels.txt --predicted_labels_file ./predicted_output.txt > results.txt
             # Function to send results
-    
-            wait $!
+            # wait $!
 
 log_file="results.txt"
 model_id={model.id}
@@ -1864,9 +1848,9 @@ END
             key_received_end_time=$(date +%s.%N)
             echo "Keys received successfully."
             # Run the evaluation script
-            Ezpc_path="./executables/bertezpc"
+            Ezpc_path="./EzPC/GPU-MPC/experiments/sigma/sigma_offline_online"
             if [ ! -f "$Ezpc_path" ]; then
-                echo "EzPC executable not found. Please build the EzPC project first."
+                echo "EzPC executable not found. Please build the EzPC(GPU-MPC sigma) project first."
                 exit 1
             fi
             echo "Running the evaluation script..."
@@ -1875,7 +1859,7 @@ END
             id=0 
             for file in key_files_model/*.dat
             do
-                $Ezpc_path 2 wt_file=$model_weights key_path=$key_path id=$id nt=8 > output_model/$id.log
+                $Ezpc_path {model_detail.name} 1 0 $key_path {evaluation_request.ip_address} 8 > output_model/$id.log
                 id=$((id+1))
             done
             eval_end_time=$(date +%s.%N)
@@ -1979,10 +1963,9 @@ def leaderboard(request):
 def platform_ezpc_processing(metadata_file_path,evaluation_request,dataset_ip_received,dataset_port_received):
      model_id=evaluation_request.model.id
      dataset_id=evaluation_request.dataset.id
+     model_detail=ModelArchitecture.objects.get(id=model_id)
      os.chdir(settings.BASE_DIR)
-     os.chdir("../gpt-ezpc/sytorch/LLMs/configs")
-     os.system(f"cp config{model_id}.json ../config.json")
-     os.chdir("../")
+     os.chdir("../gpt-ezpc/GPU-MPC/experiments/sigma")
      model_ip_received=evaluation_request.ip_address
      model_port_received=9001
      print(model_ip_received)
@@ -1991,20 +1974,21 @@ def platform_ezpc_processing(metadata_file_path,evaluation_request,dataset_ip_re
      print(dataset_port_received)
      # iterate over metadatafile and run the evaluation script on each input .dat file where id variable keeps track of the number of files
      id=0
-     
+     path=settings.BASE_DIR
      with open(metadata_file_path, 'r') as f:
           for line in f:
             #split the line to get the file name
             filename=line.split()
             #run the evaluation script on the file
             print(filename)
-            os.system(f"./executables/bertezpc 1 n_seq={filename[0]} key_path=./ezpc_keys/ id={id} nt=8")
+            os.system(f"./sigma_offline_online {model_detail.name} {filename[0]} 0 0 ./ezpc_keys/{model_detail.name}_{dataset_id}_{id}/offline/")
+            os.system(f"./sigma_offline_online {model_detail.name} {filename[0]} 0 1 ./ezpc_keys/{model_detail.name}_{dataset_id}_{id}/offline/")
             #wait for the command to complete
             id=id+1
 
         #send the generated keys to the client and server simultaneously
-     subprocess.run(['python3', 'send_keys.py', 'dataset', str(id), str(dataset_ip_received), str(dataset_port_received)],check=True)
-     subprocess.run(['python3', 'send_keys.py', 'model', str(id), str(model_ip_received), str(model_port_received)],check=True)
+     subprocess.run(['python3', 'send_keys.py', 'dataset', str(id), str(dataset_ip_received), str(dataset_port_received)],check=True,cwd=path)
+     subprocess.run(['python3', 'send_keys.py', 'model', str(id), str(model_ip_received), str(model_port_received)],check=True,cwd=path)
 
 
 @require_POST
