@@ -17,9 +17,9 @@ This project aims to create a platform that enables users to perform private ben
 
 This repository provides the accompnaying code for paper https://arxiv.org/abs/2403.00393
 
-Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs
+TRUCE: Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs
 
-Nishanth Chandran, Sunayana Sitaram, Divya Gupta, Rahul Sharma, Kashish Mittal, Manohar Swaminathan
+Tanmay Rajore, Nishanth Chandran, Sunayana Sitaram, Divya Gupta, Rahul Sharma, Kashish Mittal, Manohar Swaminathan
 
 ## Installation
 for complete build and EzPC LLM support
