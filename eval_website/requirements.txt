@@ -128,7 +128,7 @@ transformers
 Twisted
 typing-extensions
 tzdata
-urllib3<1.27,>=1.26.6
+urllib3>=2.2.2,<2.3
 wadllib
 zipp>=3.1.0
 datasets
