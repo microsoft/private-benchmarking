@@ -30,6 +30,9 @@ sudo apt install python3-pip
 # Install the required packages
 pip install -r ./eval_website/requirements.txt
 touch ./eval_website/.env
+# Generate a secret key for the Django app
+echo "Generating a secret key for the Django app"
+echo "django_secret_key = $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> ./eval_website/.env
 #setup the Environment for EzPC
 cd gpt-ezpc
 sudo apt update
