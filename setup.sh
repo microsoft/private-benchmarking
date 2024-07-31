@@ -24,12 +24,15 @@
 echo "Enter the IP address of the website"
 read website_ip
 sed -i "s/ALLOWED_HOSTS = \[\(.*\)\]/ALLOWED_HOSTS = ['localhost', '$website_ip',\1]/" eval_website/eval_website/settings.py
+touch ./eval_website/.env
+# Generate a secret key for the Django app
+echo "Generating a secret key for the Django app"
+echo "django_secret_key = $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> ./eval_website/.env
 # Clone the submodules
 git submodule update --init --recursive
 sudo apt install python3-pip
 # Install the required packages
 pip install -r ./eval_website/requirements.txt
-touch ./eval_website/.env
 #setup the Environment for EzPC
 cd gpt-ezpc
 sudo apt update

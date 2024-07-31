@@ -34,7 +34,10 @@ for complete build and EzPC LLM support
     ./setup.sh
     Enter the Server IP address: <your_server_IP>
     ```
-only the platform
+    - The setup.sh file will install the required dependencies and setup the environment for the platform to run. The .env file contains the django secret key which can be changed as per the user's requirement.For any key related storage, the user should only use the .env file.
+
+only the platform 
+- NOTE: Need to set the environment variable ENCRYPTION_KEY for the TTP/TEE server to run (32 bytes/256 bits) key and .env file manually for the platform to run and the IP address for the platform to run on.
 ```
 pip install -r requirements.txt
 cd eval_website/eval_website
