@@ -33,7 +33,7 @@ certifi
 cffi
 chardet
 charset-normalizer
-click>=8.0.0
+click>=8.3.2
 colorama
 coloredlogs
 conan
