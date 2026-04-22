@@ -130,7 +130,7 @@ typing-extensions
 tzdata
 urllib3<1.27,>=1.26.6
 wadllib
-zipp>=3.1.0
+zipp>=3.23.1
 datasets
 python-dotenv
 timm
